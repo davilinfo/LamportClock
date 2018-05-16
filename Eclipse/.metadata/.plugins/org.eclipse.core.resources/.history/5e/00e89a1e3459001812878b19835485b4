@@ -22,7 +22,7 @@ public class ServerSocket extends java.net.ServerSocket {
 		clientSocket = socket;
 		
 		int outerSocketTimeValue = clientSocket.getInputStream().read();
-		timeValue = timeValue > outerSocketTimeValue ? timeValue + 1 : outerSocketTimeValue + 1;
+		timeValue = timeValue > outerSocketTimeValue ? timeValue + 1 : outerSocketTimeValue;
 		return Integer.toString(timeValue);
 	}
 	

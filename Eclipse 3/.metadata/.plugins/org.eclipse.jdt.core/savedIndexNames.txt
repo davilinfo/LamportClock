@@ -9,9 +9,8 @@ INDEX VERSION 1.130+C:\Users\Davi Lima Alves\Documents\LamportClock\Eclipse 3\.m
 1721714348.index
 756006386.index
 2546076573.index
-1921432459.index
 1312586118.index
-224009902.index
+1921432459.index
 1295027826.index
 1929933281.index
 2349671270.index
