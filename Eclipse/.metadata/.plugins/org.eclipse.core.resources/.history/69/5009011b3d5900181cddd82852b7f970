@@ -1,0 +1,91 @@
+package LamportClock;
+
+import java.io.IOException;
+import java.net.Socket;
+
+public class ServerSocket extends java.net.ServerSocket {
+	static int id;
+	Socket clientSocket;
+	static int timeValue;
+	static Socket sendSocket;
+	
+	public ServerSocket(int port) throws IOException {
+		super(port);
+		//id de classe
+		id = 1;
+		//valor inicial
+		timeValue = 0;
+	}
+	
+	public String GetLamportValue(Socket socket) throws IOException, InterruptedException{
+		
+		clientSocket = socket;
+		
+		int outerSocketTimeValue = clientSocket.getInputStream().read();
+		
+		timeValue = timeValue > outerSocketTimeValue ? timeValue + 1 : outerSocketTimeValue + 1;
+		return Integer.toString(timeValue);
+	}
+	
+	public static String SetNewLocalEventValue() throws InterruptedException{
+		
+		//Realiza alguma atividade e incrementa valor de tempo
+		Thread.sleep(1000);
+		
+		timeValue += 1;
+		
+		return Integer.toString(timeValue);
+	}
+	
+	public static String SetNewEventValue(){
+		
+		timeValue += 1;
+		
+		return Integer.toString(timeValue);
+	}
+	
+	public static void CheckReceivedValue(int receivedValue, Socket pReceivedSocket) throws IOException{
+		int globalTime = 0;
+		
+		if (receivedValue < timeValue){
+			pReceivedSocket.getOutputStream().write(timeValue + 1);
+		}
+	}
+	
+	public static void main(String[] args) throws IOException, InterruptedException {
+
+		ServerSocket serverSocket1 = new ServerSocket(8085);
+		
+		//evento 1. Local e informa valor de Lamport
+		String serverSocket1LamportValue = SetNewLocalEventValue();
+		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
+		
+		//evento 2. Local e informa valor de Lamport
+		serverSocket1LamportValue = SetNewLocalEventValue();
+		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
+		
+		//evento 3. Local e informa valor de Lamport
+		serverSocket1LamportValue = SetNewLocalEventValue();
+		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
+		
+		//evento 4. Recebe msg de outro socket e informa valor de Lamport
+		System.out.println("Socket " + id + " Aguardando conexão de Socket 2");
+		serverSocket1LamportValue = serverSocket1.GetLamportValue(serverSocket1.accept());
+		System.out.println("Socket " + id + "| Evento " + serverSocket1LamportValue);
+		
+		//evento 5 e envia msg para socket cliente conectado para sincronização
+		if (serverSocket1.clientSocket.isConnected()){
+			CheckReceivedValue(ServerSocket.timeValue, serverSocket1.clientSocket);
+			
+			sendSocket = new Socket("localhost", 8090);
+			SetNewEventValue();
+			sendSocket.getOutputStream().write(ServerSocket.timeValue);
+			CheckReceivedValue(ServerSocket.timeValue, sendSocket);
+			System.out.println("Socket " + id + "| Evento " + ServerSocket.timeValue);
+		}
+		
+		serverSocket1.close();
+	}
+
+}
+

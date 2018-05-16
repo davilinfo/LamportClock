@@ -8,6 +8,7 @@ public class ServerSocket extends java.net.ServerSocket {
 	Socket clientSocket;
 	static int timeValue;
 	static Socket sendSocket;
+	static Socket sendSocket3;
 	
 	public ServerSocket(int port) throws IOException {
 		super(port);
@@ -22,14 +23,14 @@ public class ServerSocket extends java.net.ServerSocket {
 		clientSocket = socket;
 		
 		int outerSocketTimeValue = clientSocket.getInputStream().read();
+		
+		CheckReceivedValue(outerSocketTimeValue, clientSocket);
+		
 		timeValue = timeValue > outerSocketTimeValue ? timeValue + 1 : outerSocketTimeValue + 1;
 		return Integer.toString(timeValue);
 	}
 	
 	public static String SetNewLocalEventValue() throws InterruptedException{
-		
-		//Realiza alguma atividade e incrementa valor de tempo
-		Thread.sleep(1000);
 		
 		timeValue += 1;
 		
@@ -43,6 +44,26 @@ public class ServerSocket extends java.net.ServerSocket {
 		return Integer.toString(timeValue);
 	}
 	
+	public static void CheckReceivedValue(int receivedValue, Socket pReceivedSocket) throws IOException{				
+		if (receivedValue < timeValue){
+			pReceivedSocket.getOutputStream().write(timeValue + 1);
+		}else{
+			pReceivedSocket.getOutputStream().write(receivedValue);
+		}
+	}
+	
+	public static void CheckSentValue(int sentValue, Socket pSendSocket) throws IOException{				
+		
+		while (pSendSocket.getInputStream().available() == 0){
+			
+		}
+		
+		int receivedValue = pSendSocket.getInputStream().read();
+		if (sentValue < receivedValue){
+			timeValue = receivedValue + 1;
+		}
+	}
+	
 	public static void main(String[] args) throws IOException, InterruptedException {
 
 		ServerSocket serverSocket1 = new ServerSocket(8085);
@@ -51,26 +72,40 @@ public class ServerSocket extends java.net.ServerSocket {
 		String serverSocket1LamportValue = SetNewLocalEventValue();
 		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
 		
-		//evento 2. Local e informa valor de Lamport
-		serverSocket1LamportValue = SetNewLocalEventValue();
-		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
+		//evento 2 envia mensagem 
+		sendSocket = new Socket("localhost", 8090);
+		SetNewEventValue();
+		sendSocket.getOutputStream().write(timeValue);
+		
+		CheckSentValue(ServerSocket.timeValue, sendSocket);
+		System.out.println("Socket " + id + "| Evento " + timeValue);
+		sendSocket.close();
 		
 		//evento 3. Local e informa valor de Lamport
 		serverSocket1LamportValue = SetNewLocalEventValue();
 		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
+				
+		Thread.sleep(5000);
 		
-		//evento 4. Recebe msg de outro socket e informa valor de Lamport
-		System.out.println("Socket " + id + " Aguardando conexão de Socket 2");
-		serverSocket1LamportValue = serverSocket1.GetLamportValue(serverSocket1.accept());
-		System.out.println("Socket " + id + "| Evento " + serverSocket1LamportValue);
+		//evento 8. Atualizado de outro socket. Envia msg para outro socket para sincronização
+		sendSocket3 = new Socket("localhost", 8095);
+		SetNewEventValue();
+		sendSocket3.getOutputStream().write(ServerSocket.timeValue);
+		CheckSentValue(ServerSocket.timeValue, sendSocket3);
+		System.out.println("Socket " + id + "| Evento " + ServerSocket.timeValue);
+	
+		Thread.sleep(5000);
 		
-		//evento 5 e envia msg para socket cliente conectado para sincronização
-		if (serverSocket1.clientSocket.isConnected()){
-			sendSocket = new Socket("localhost", 8090);
-			SetNewEventValue();
-			sendSocket.getOutputStream().write(ServerSocket.timeValue);
-			System.out.println("Socket " + id + "| Evento " + ServerSocket.timeValue);
-		}
+		//evento 9. Envia mensagem para socket 2 
+		sendSocket = new Socket("localhost", 8090);
+		SetNewEventValue();
+		sendSocket.getOutputStream().write(timeValue);
+		
+		CheckSentValue(ServerSocket.timeValue, sendSocket);
+		System.out.println("Socket " + id + "| Evento " + timeValue);
+		sendSocket.close();
+		
+		System.out.println("Concluído");
 		
 		serverSocket1.close();
 	}
