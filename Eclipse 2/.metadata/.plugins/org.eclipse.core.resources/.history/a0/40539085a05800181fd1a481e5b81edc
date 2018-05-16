@@ -1,0 +1,7 @@
+package LamportClock;
+
+import java.net.SocketImpl;
+
+public class Socket1 extends SocketImpl {
+
+}

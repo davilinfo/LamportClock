@@ -1,0 +1,35 @@
+package LamportClock;
+
+import java.io.Console;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Hashtable;
+
+public class ServerSocket extends java.net.ServerSocket {
+	ClientSocket clientSocket;
+	Hashtable hashTable;
+	int timeValue;
+	
+	public ServerSocket(int port) throws IOException {
+		super(port);
+
+		hashTable = new Hashtable<>();
+	}
+	
+	public String Add(Socket socket){				
+		
+		return "";
+	}
+	
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+
+		ServerSocket serverSocket1 = new ServerSocket(5700);
+		
+		serverSocket1.Add(serverSocket1.accept());
+		
+		System.out.println("");
+	}
+
+}
+

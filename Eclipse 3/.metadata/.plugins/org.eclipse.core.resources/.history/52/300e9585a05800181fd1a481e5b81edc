@@ -1,0 +1,18 @@
+package LamportClock;
+
+import java.io.IOException;
+import java.net.ServerSocket;
+
+public class Socket1 {
+	
+	ServerSocket serverSocket;
+	
+	public Socket1() throws IOException
+	{
+		serverSocket = new ServerSocket(3350);
+	}
+
+	public static void main(String args[]){
+		
+	}
+}

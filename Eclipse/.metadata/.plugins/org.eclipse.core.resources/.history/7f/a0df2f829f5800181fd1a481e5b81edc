@@ -1,0 +1,15 @@
+package LamportClock;
+
+import java.net.ServerSocket;
+import java.net.SocketImpl;
+
+public class Socket1 SocketImpl {
+
+	ServerSocket socket1;
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+					
+	}
+
+}

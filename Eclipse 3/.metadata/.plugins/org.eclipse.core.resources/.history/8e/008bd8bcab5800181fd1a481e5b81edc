@@ -1,0 +1,14 @@
+package LamportClock;
+
+import java.net.Socket;
+
+public class ClientSocket {
+	
+	public int socketId;
+	public Socket socket;
+
+	public ClientSocket(int newSocketId, Socket newSocket){
+		socketId = newSocketId;		
+		socket = newSocket;
+	}
+}
