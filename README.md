@@ -1,7 +1,7 @@
 # LamportClock
 Developed by Davi Lima Alves
 
-To run this implementation of Lamport Time Clock follow these instructions:
+To run this implementation of Lamport Logical Time Clock follow these instructions:
 1- Open one instance of Eclipse IDE and open the workspace of name "Eclipse" folder
 2- Run ServerSocket.java
 3- Open another instance of Eclipse IDE and open the workspace of name "Eclipse 3" folder
