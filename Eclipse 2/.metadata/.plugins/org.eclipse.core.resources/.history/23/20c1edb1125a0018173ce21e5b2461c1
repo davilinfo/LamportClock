@@ -24,7 +24,7 @@ public class ServerSocket extends java.net.ServerSocket {
 		
 		int outerSocketTimeValue = clientSocket.getInputStream().read();
 		
-		//CheckReceivedValue(outerSocketTimeValue, clientSocket);
+		CheckReceivedValue(outerSocketTimeValue, clientSocket);
 		
 		timeValue = timeValue > outerSocketTimeValue ? timeValue + 1 : outerSocketTimeValue + 1;
 		return Integer.toString(timeValue);
@@ -47,25 +47,25 @@ public class ServerSocket extends java.net.ServerSocket {
 		return Integer.toString(timeValue);
 	}
 	
-	//public static void CheckReceivedValue(int receivedValue, Socket pReceivedSocket) throws IOException{				
-	//	if (receivedValue < timeValue){
-	//		pReceivedSocket.getOutputStream().write(timeValue + 1);
-	//	}else{
-	//		pReceivedSocket.getOutputStream().write(receivedValue);
-	//	}
-	//}
+	public static void CheckReceivedValue(int receivedValue, Socket pReceivedSocket) throws IOException{				
+		if (receivedValue < timeValue){
+			pReceivedSocket.getOutputStream().write(timeValue + 1);
+		}else{
+			pReceivedSocket.getOutputStream().write(receivedValue);
+		}
+	}
 	
-	//public static void CheckSentValue(int sentValue, Socket pSendSocket) throws IOException{				
-	//	
-	//	while (pSendSocket.getInputStream().available() == 0){
-	//		
-	//	}
+	public static void CheckSentValue(int sentValue, Socket pSendSocket) throws IOException{				
 		
-	//	int receivedValue = pSendSocket.getInputStream().read();
-	//	if (sentValue < receivedValue){
-	//		timeValue = receivedValue;
-	//	}
-	//}
+		while (pSendSocket.getInputStream().available() == 0){
+			
+		}
+		
+		int receivedValue = pSendSocket.getInputStream().read();
+		if (sentValue < receivedValue){
+			timeValue = receivedValue;
+		}
+	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -86,7 +86,7 @@ public class ServerSocket extends java.net.ServerSocket {
 		
 		sendSocket3 = new Socket("localhost", 8095);
 		sendSocket3.getOutputStream().write(timeValue);
-		//CheckSentValue(ServerSocket.timeValue, sendSocket3);
+		CheckSentValue(ServerSocket.timeValue, sendSocket3);
 		
 		System.out.println("Socket " + id + "| Evento " + timeValue);
 		

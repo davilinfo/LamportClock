@@ -85,8 +85,8 @@ public class ServerSocket extends java.net.ServerSocket {
 		serverSocket1LamportValue = SetNewLocalEventValue();
 		System.out.println("Socket " + id + "| Evento " +  serverSocket1LamportValue);
 		
-		//evento 8. Recebe msg de socket 3 e informa valor de Lamport
-		System.out.println("Socket " + id + " Aguardando conexão de Socket 3");
+		//evento 8. Recebe msg de socket 2 e informa valor de Lamport
+		System.out.println("Socket " + id + " Aguardando conexão de Socket 1");
 		serverSocket1LamportValue = serverSocket1.GetLamportValue(serverSocket1.accept());
 		System.out.println("Socket " + id + "| Evento " + serverSocket1LamportValue);
 		

@@ -23,7 +23,7 @@ public class ServerSocket extends java.net.ServerSocket {
 		
 		int outerSocketTimeValue = clientSocket.getInputStream().read();
 		
-		//CheckReceivedValue(outerSocketTimeValue, clientSocket);
+		CheckReceivedValue(outerSocketTimeValue, clientSocket);
 		
 		timeValue = timeValue > outerSocketTimeValue ? timeValue + 1 : outerSocketTimeValue + 1;
 		return Integer.toString(timeValue);
@@ -46,25 +46,25 @@ public class ServerSocket extends java.net.ServerSocket {
 		return Integer.toString(timeValue);
 	}
 	
-	//public static void CheckReceivedValue(int receivedValue, Socket pReceivedSocket) throws IOException{				
-	//	if (receivedValue < timeValue){
-	//		pReceivedSocket.getOutputStream().write(timeValue + 1);
-	//	}else{
-	//		pReceivedSocket.getOutputStream().write(receivedValue);
-	//	}
-	//}
+	public static void CheckReceivedValue(int receivedValue, Socket pReceivedSocket) throws IOException{				
+		if (receivedValue < timeValue){
+			pReceivedSocket.getOutputStream().write(timeValue + 1);
+		}else{
+			pReceivedSocket.getOutputStream().write(receivedValue);
+		}
+	}
 	
-	//public static void CheckSentValue(int sentValue, Socket pSendSocket) throws IOException{				
-	//	
-	//	while (pSendSocket.getInputStream().available() == 0){
-	//		
-	//	}
-	//	
-	//	int receivedValue = pSendSocket.getInputStream().read();
-	//	if (sentValue < receivedValue){
-	//		timeValue = receivedValue;
-	//	}
-	//}
+	public static void CheckSentValue(int sentValue, Socket pSendSocket) throws IOException{				
+		
+		while (pSendSocket.getInputStream().available() == 0){
+			
+		}
+		
+		int receivedValue = pSendSocket.getInputStream().read();
+		if (sentValue < receivedValue){
+			timeValue = receivedValue;
+		}
+	}
 	
 	public static void main(String[] args) throws IOException, InterruptedException {
 
@@ -83,13 +83,10 @@ public class ServerSocket extends java.net.ServerSocket {
 		serverSocket1LamportValue = SetNewLocalEventValue();
 		System.out.println("Socket " + id + "| Evento " + serverSocket1LamportValue);
 		
-		//evento 7. Envia msg para outro socket para sincronização
-		sendSocket = new Socket("localhost", 8085);
-		SetNewEventValue();
-		sendSocket.getOutputStream().write(ServerSocket.timeValue);
-		//CheckSentValue(ServerSocket.timeValue, sendSocket3);
-		System.out.println("Socket " + id + "| Evento " + ServerSocket.timeValue);
-		
+		//evento 7. Recebe msg de socket 2 e informa valor de Lamport
+		System.out.println("Socket " + id + " Aguardando conexão de Socket 1");
+		serverSocket1LamportValue = serverSocket3.GetLamportValue(serverSocket3.accept());
+		System.out.println("Socket " + id + "| Evento " + serverSocket1LamportValue);
 		
 		System.out.println("Concluído");
 		
